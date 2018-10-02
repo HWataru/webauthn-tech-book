@@ -1,0 +1,53 @@
+= コラム - 無限にアカウント登録出来るFIDO-U2Fトークンの謎
+
+FIDO-U2Fトークン、皆様活用していますか？少しづつ対応しているサイトも増えてきていますが、
+登録する際、果たして1つのFIDO-U2Fのトークンに何個までアカウントを登録できるのか、
+トークンの記憶領域は溢れないのか気になったことはありませんか。実は無限に保存出来るようです（少なくともYubikeyは）。
+今時、Micro SDカードでも512GBの容量が実現出来ますので、アカウントのCredentialを保存する位なら、
+無限に等しい容量をトークンに持たせることも可能ですが、そうすると当然コストに影響してきます。
+Yubikeyでは、トークンの記憶領域に頼ることなく、二段階認証の二つ目の認証要素、という特性を
+最大限に活用した非常にスマートな方法でアカウント登録を無限に出来るようしており、
+Yubikeyのサイト（ @<href>{https://developers.yubico.com/U2F/Protocol_details/Key_generation.html, https://developers.yubico.com/U2F/Protocol_details/Key_generation.html} ）で解説されていた
+その実現方式が非常に興味深かったので、このコラムでは簡単に紹介していきたいと思います。
+なお、このコラムでは、用語はFIDO-U2Fでの呼称ではなく、WebAuthnでの呼称に統一して表記します。
+
+== FIDO-U2FがAuthenticator（トークン）に求める要件
+
+おさらいとなりますが、FIDO-U2Fでは、フィッシング攻撃耐性を実現する為に、
+Authenticatorの登録時にrpId（≈ドメイン）毎、アカウント毎に鍵ペアを生成し、
+Authenticatorが秘密鍵を、Relying Partyのサーバー側が公開鍵を保存、認証時に秘密鍵によって生成した署名を
+Relying Partyのサーバーが公開鍵で検証することで、rpId毎に異なる鍵ペアを用いた公開鍵認証を実現しています。
+もしフィッシングサイトなど、ドメインの異なるサイトから認証リクエストを受けても、rpIdが一致しなければ、
+当該サイト用の秘密鍵を用いた署名の取得は行われません。
+
+このように、FIDO-U2Fでは、AuthenticatorはrpId毎、アカウント毎に異なるCredentialを提供する必要があります。
+しかしながら、実はYubiKeyのトークンは、rpId毎、アカウント毎に異なるCredentialをその記憶領域に保存している訳ではありません。
+実はRelying PartyのサーバーにCredentialの保存をオフロードしています。
+
+== Credentialの保存のオフロード
+
+CredentialはAuthenticatorの登録時に生成され、Authenticatorを用いた認証時に署名を生成するために利用されます。
+FIDO-U2Fでの認証時には、使用したいCredentialを指定するために、Credentialの生成時にAuthenticatorから払い出された
+CredentialIdという識別子をRelying Partyは指定する必要があり、Relying Partyはアカウントに紐づけてCredentialIdを保存しますが、
+実はこのCredentialIdは長さが無制限のバイト配列となっており、CredentialIdの中に、
+Authenticatorの登録時から認証時に引き回したいパラメータをエンコードしてしまうことが可能です。
+
+YubikeyではRP毎の秘密鍵の作成を要求された際、デバイス固有に焼き込まれたSecretと乱数（Nonce）、
+rpIdを入力に秘密鍵を生成しています。秘密鍵の生成に使用したNonceとデバイス固有のSecret、rpIdがあれば、後でもRP毎の秘密鍵は
+再度導出可能であることを利用して、YubikeyではNonce（とNonceを改竄から保護するためのMAC）をCredentialIdとしています。
+
+//image[key_generation][鍵の生成]
+
+認証時には、AuthenticatorはRelying Partyから渡されたCredentialIdからNonceを取り出し、
+Nonceが改竄されていないか、MACをデバイス固有Secretで検証した上で、Nonceとデバイス固有に焼き込まれたSecret、
+rpIdから秘密鍵を導出して認証に用います。秘密鍵の導出に使用されるNonceはAuthenticator外部に暴露しますが、
+デバイス固有に焼き込まれたSecretはAuthenticator外部に出ることは無く、耐タンパ性のある記憶領域に保持出来る為、
+安全性は担保されます。このようにして、CredentialIdにNonceを埋め込むことで、AuthenticatorはRelying Partyのサーバー側に
+秘密鍵の永続化を肩代わりさせ、書き換え可能な領域を一切持たずに無限にアカウント登録が出来るように出来ているのです。
+
+さて、この方式は、認証時にRelying PartyがCredentialIdを指定することが前提となっていますが、これが出来るのは、
+認証時にユーザーの特定が完了していて紐づくCredentialIdが限定出来る状態、即ち二段階認証における二段階目の認証においてのみです。
+FIDO2で登場した、第一認証要素として使用できる認証デバイスの場合は、CredentialIdをサーバーに教えてもらうことが出来ないので、
+CredentialをAuthenticator内部に保存する必要があり、FIDO2に対応した"SecurityKey by Yubico"でも、
+第一認証要素として使用した場合は登録出来るCredentialの数に上限があります。
+上限に到達すると、それ以上のCredentialの登録はエラーが発生するようになるので注意しましょう。

@@ -4,7 +4,7 @@ PREDEF:
 CHAPS:
   - fido.re
   - webauthn.re
-  - shiroica.re
+  - unlimited-yubikey-u2f-storage.re
 
 APPENDIX:
 
