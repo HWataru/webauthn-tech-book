@@ -1,6 +1,6 @@
 = 著者紹介
 
-==== 第1~2章 watahani / @watahani
+==== 第1~2章 @watahani
 
 泣きながらあとがきを書いている。
 一年前から WebAuthn について調べだし、現在 fido2-workshop@<fn>{fido2-workshop} というコミュニティの運営を行っている。
@@ -11,3 +11,5 @@
 
 ==== 第3章 shiroica / @shiroica
 
+趣味で WebAuthn のサーバーサイドライブラリを作っている変なひと。
+著者より WebAuthn に関しては詳しいので、困ったときは彼に聞こう。
