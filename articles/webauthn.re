@@ -377,6 +377,8 @@ Attestation は Credential の生成時に、Authenticator から返され、
 これは主にエンタープライズ向けに信頼された Authenticator のみを利用するように制限するといった、ユースケースで用いられます。
 デフォルトのオプションでは Attestation は Client で削除され、RPには送られません。そのため、Attestation が必要な場合は、明示的なオプションを指定してやる必要があります。
 
+//pagebreak
+
 //listnum[attestation][AttestationConveyancePreference]{
 let publicKeyCredentialCreationOptions = {
     challenge: challenge,
