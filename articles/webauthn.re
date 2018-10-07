@@ -67,7 +67,6 @@ navigator.credentials.get({publicKey: PublicKeyCredentialRequestOptions})
 
 @<img>{WebAuthn_Registration_r4} は MDN Web docs に記載されている WebAuthn の登録フローです。
 
-//image[WebAuthn_Registration_r4][Registration* https://developer.mozilla.org/ja/docs/Web/API/Web_Authentication_API]
 
 Credential Management API のメソッドである navigator.credentials.create() の引数である、CredentialCreationOptions 
 として、{ publicKey: options } といった形で WebAuthn で利用するオプションを渡しています。
@@ -75,6 +74,12 @@ Credential Management API のメソッドである navigator.credentials.create(
 「誰に対して」「どのような Authenticator」を利用して「どのRPの」 Credential を作成するか、といったことを定めます。
 
 もっともシンプルな例として @<list>{create} を見てみましょう。
+
+//image[WebAuthn_Registration_r4][Registration* https://developer.mozilla.org/ja/docs/Web/API/Web_Authentication_API]
+
+@<list>{create} は必須のオプションのみ指定しました。
+@<strong>{challenge} は rpサーバーから送られるランダムなバイト列です。この例では、説明のため js 上で生成していますが、
+他のパラメータ含め、通常サーバー側から送られることに注意してください。
 
 //listnum[create][navigator.credentails.create()][js]{
 
@@ -112,9 +117,6 @@ navigator.credentials.create({
 
 //}
 
-@<list>{create} は必須のオプションのみ指定しました。
-@<strong>{challenge} は rpサーバーから送られるランダムなバイト列です。この例では、説明のため js 上で生成していますが、
-他のパラメータ含め、通常サーバー側から送られることに注意してください。
 
 @<strong>{rp} は認証先のRPに関するパラメーターで、@<strong>{name} は必須のパラメーターです。
 @<strong>{id} は省略可能なパラメーターで、省略した場合は現在アクセスしている origin のドメイン名と同一の値になります。
@@ -250,6 +252,12 @@ navigator.credentials.get({
 response には AuthenticatorAssertionResponse がセットされ、publicKey などが含まれる AttestationObject は含まれておらず、
 代わりに authenticatorData と signature が返されます。
 
+ClientData は credentials.create() の際の @<list>{clientDataJSON}同様で、type のみ webauthn.get となっています。
+authenticatorData は、さまざまなデータを含みますが、今は RP ID Hash, 1yte の　Flags（UP,UV の結果を含む）, Counter が含まれるものだと思ってください。
+
+@<strong>{signature} は credentials.get() で作成した publicKey に対応する秘密鍵で作成した署名で、
+authenticatordata と clientDatan の SHA256 ハッシュを計算した clientDataHash を結合したバイト配列に対して行われます。
+
 //listnum[AuthenticatorAssertionResponse][AuthenticatorAssertionResponse]{
 {
     rawId: [ArrayBuffer] (32 bytes)
@@ -269,12 +277,6 @@ response には AuthenticatorAssertionResponse がセットされ、publicKey �
     }
 }
 //}
-
-ClientData は credentials.create() の際の @<list>{clientDataJSON}同様で、type のみ webauthn.get となっています。
-authenticatorData は、さまざまなデータを含みますが、今は RP ID Hash, 1yte の　Flags（UP,UV の結果を含む）, Counter が含まれるものだと思ってください。
-
-@<strong>{signature} は credentials.get() で作成した publicKey に対応する秘密鍵で作成した署名で、
-authenticatordata と clientDatan の SHA256 ハッシュを計算した clientDataHash を結合したバイト配列に対して行われます。
 
 サーバー側では ClientDataJSON に含まれる challenge, origin の検証、authenticatorData に含まれる rpId の検証、Flags の検証を行った後
 保存されている publicKey で署名の検証を行います。
