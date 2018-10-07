@@ -4,8 +4,8 @@
 
 //image[webauthn_overview][FIDO2 Overview]
 
-@<img>{webauthn_overview} は Web Authentication API（以下WebAuthn） と Platform および、
-External Authenticator の関係図です。
+@<img>{webauthn_overview} は Web Authentication API（以下WebAuthn） と Platform および、External Authenticator の関係図です。
+FIDO の文脈における RP（Relying Party）とは認証を委任するサーバーを指し、一般には Id Provider などの ID 提供者であることが多いです。
 
 前章で解説したとおり、FIDO2.0 は WebAuthn と、 CTAP1/CTAP2 および Platform API を、
 それぞれの OS,Browser ベンダーが実装して実現するプロジェクトです。
@@ -13,24 +13,25 @@ External Authenticator の関係図です。
 
 Platform API は、Platform、つまり PC や スマートフォンに登載された TPM や TEE といったセキュアチップと通信を行います。
 PIN あるいはデバイスに登載された生体認証デバイスによって、セキュアチップ上での秘密鍵の生成や保存のための認証が行われます。
-この API が利用できるかどうかは isUserVerifyingPlatformAuthenticatorAvailable() というメソッドが用意されており、
-ネイティブアプリケーション、あるいは Web ブラウザーから呼び出せるようになっています。
+
+Internal Authenticator を利用する API は、ネイティブアプリケーション、あるいは Web ブラウザーから呼び出せるようになっています。
+Android や、Windows 10 では が利用できるかどうかは isUserVerifyingPlatformAuthenticatorAvailable() というメソッドで判定ができるようになっているようです。
 
 == CTAP
 
 CTAP とは Client to Authenticator Protocol@<fn>{CTAP} の略で、Client が roaming Authenticator と通信するための仕様です。
+roaming Authenticator とは、持ち運びが可能な外付けの認証デバイスであり、 
+CTAP では Client と USB/NFC/Bluetooth のいずれかで通信するように定められています。
 
 CTAP には CTAP1 と CTAP2 が存在し、CTAP1 は U2F プロトコルを指します。
 一方 CTAP2 は CTAP1 を拡張した規格です。CTAP2 では CTAP1 では実現できなかったパスワードレス認証や、PIN や 生体認証を利用したマルチファクター認証がスペックとして追加されています。
 
 //footnote[CTAP][Client To Authenticator Protocol: https://fidoalliance.org/specs/fido-v2.0-id-20180227/fido-client-to-authenticator-protocol-v2.0-id-20180227.html]
 
-
-
 ====[column] U2F と CTAP1
 
 WebAuthn では U2Fプロトコルに対応した Authenticator を利用することが可能です。
-少し説明が難しいのですが、その場合 CTAP1、つまり U2Fプロトコルとは一部パラメータ等が異なります。
+少し説明が難しいのですが、その場合 WebAuthn と従来の U2Fプロトコルとは一部パラメータ等が異なります。
 具体的には U2F では AppID、WebAuthn では RP ID と呼ばれているパラメータが異なっており、、前者がプロトコル名 (https://) を含むのに対し、後者は ドメイン名しか含みません。
 そのため、現在 U2F で認証をしているサービスをそのまま、WebAuthn に切り替えることはできません。
 ただし、WebAuthn のスペックには、この差を埋めるための Extension（AppIdExtention） が定義されており、
@@ -126,11 +127,17 @@ Authenticator 上で、アカウント情報を表示する際などに利用さ
 @<strong>{user.id} はサービス固有の ID で利用者に対して表示することはありませんが必ずユニークな id である必要があります。
 一般的にはサービスの内部で利用しているユーザーのユニークidを利用することになるでしょう。
 
+@<strong>{pubKeyCredParams} は、 Authenticator が使用する署名アルゴリズムを指しており、
+WebAuthn では "-7": ES256 (ECDSA w/ SHA-256) および、"-257": RS256 (RSASSA-PKCS1-v1_5 w/ SHA-256) の
+2つの署名アルゴリズムのいずれか、あるいは両方を指定できます。
+現在利用できる Authenticator でいうと Windows Hello で利用する TPM が RS256 を、
+それ以外の Authenticator が ES256 を利用しています。
+
+
 === PublicKeyCredential --credentails.create({pulbickey})--
 
 navigator.credentials.create() メソッドで公開鍵暗号ベースの Credential を作成しようとすると、Authenticator へこれらの情報が送られます。
 Authenticator は Credential を作成するためにユーザー認証を行います。
-たとえば Authenticator のボタンをタップする、あるいは生体認証によるユーザー認証を行うといった動作になります。
 
 ユーザー認証が完了すると Authenticator は作成した Credentail を Client に返します。
 レスポンスは、PublicKeyCredential として navigator.credentials.create() の返す Promise オブジェクトの戻り値として返されます。
@@ -173,6 +180,27 @@ origin の検証、Attestationの検証に利用されます。
 詳しいサーバー側での処理は Spec 7.1. Registering a New Credential@<fn>{registering-a-new-credential} を参照ください。
 
 //footnote[registering-a-new-credential][https://w3c.github.io/webauthn/#registering-a-new-credential]
+
+====[column] User Presence と User Verification
+
+WebAuthn ではユーザーの認証ジェスチャーとして、User Presence（UP） と User Verification（UV） の2つを定めています。
+UP はユーザーが Authenticator にタッチするなどの簡単な動作を指します。
+YubiKey であれば、金属リング部分をタッチするといった動作になります。
+これは Authenticator の近くにユーザーが存在し、認証情報の作成に同意したことを簡単な動作で示すことを意味します。
+UP は WebAuthn のプロトコルでは必須であるため、Authenticator は何らかの形で User Presence を確認する必要があります。
+
+一方 User Verification（UV） は、Authenticator が各ユーザーを識別するために、
+生体認証や PIN を用いてユーザー検証を行うことを指します。
+スマートフォンの生体認証や PIN の入力を行うことで、 Credential の利用者本人であることを確認します。
+UV は WebAuthn では、optional ですが、Credential の作成、使用の際のオプションとして
+必ず UV を使用するといった指定をすることが可能です。
+
+User Presence と User Verification は、通常同時に行われることが多いですが、
+YubiKey など、生体認証を利用できない Authenticator などでは、キーへのタッチ・PINの入力を
+別々に行わなければいけないことに注意してください。
+
+ちなみに Android や Microsoft Hello で利用する PIN は、User Verification も兼ねているようです。
+おそらく、PIN の入力をローカルリソースからでなければできないような仕組みにしているのだと思いますが詳細は不明です。
 
 === Use an Existing Credential to Make an Assertion
 
@@ -237,7 +265,7 @@ response には AuthenticatorAssertionResponse がセットされ、publicKey �
 //}
 
 ClientData は credentials.create() の際の @<list>{clientDataJSON}同様で、type のみ webauthn.get となっています。
-authenticatorData は、さまざまなデータを含みますが、今は RP ID Hash, 1yte のFlags, Counter が含まれるものだと思ってください。
+authenticatorData は、さまざまなデータを含みますが、今は RP ID Hash, 1yte の　Flags（UP,UV の結果を含む）, Counter が含まれるものだと思ってください。
 
 @<strong>{signature} は credentials.get() で作成した publicKey に対応する秘密鍵で作成した署名で、
 authenticatordata と clientDatan の SHA256 ハッシュを計算した clientDataHash を結合したバイト配列に対して行われます。
@@ -249,7 +277,6 @@ authenticatordata と clientDatan の SHA256 ハッシュを計算した clientD
 詳しいサーバー側での処理は Spec 7.2. Verifying an Authentication Assertion@<fn>{verifying-assertion} を参照ください。
 
 //footnote[verifying-assertion][https://w3c.github.io/webauthn/#verifying-assertion]
-
 
 == まとめ
 
