@@ -26,6 +26,18 @@
 
 FIDO Alliance @<fn>{fidoalliance} は Fast IDentity Online の略で、パスワードに依存しない新しい認証仕様の普及を目的とした団体です。
 
+//quote{
+FIDO (Fast IDentity Online) アライアンスは、堅牢な認証デバイス間で相互運用性が欠如している現状を変革し、
+ユーザーが複数のユーザー名とパスワードを作成して記憶しなければならないという問題の解決を目的として、
+2012年7月、501(c)6 非営利団体（米国内国歳入法第201 (C)6 節により免税される非営利団体）として正式に発足しました。
+FIDOアライアンスは、ユーザー認証におけるパスワードへの依存を軽減するために、オープンで拡張性と相互運用性があるメカニズムを定義する仕様を開発することにより、
+認証の本質に変革をもたらしています。
+セキュリティデバイスやブラウザプラグインのための新しい標準規格によって、
+あらゆるウェブサイトやクラウドアプリケーションは、オンラインのより高い安全性を確保した現在および将来のFIDO認定デバイスと接続できるようになります。
+//}
+
+@<href>{https://fidoalliance.org/about-the-fido-alliance/?lang=ja} より引用
+
 ボードメンバーとしては、グローバルでは Google, Microsoft, Amazon, Paypal といったリードカンパニーが参画しています。また今年（2018年3月）には Facebook がボードメンバー@<fn>{boardmember} として参画しています。
 Alliance 内では仕様の策定や、FIDO Certificate の認定プログラム、仕様の普及のためのイベント等が、複数のワーキンググループに分かれて行われています。
 日本国内では主に FIDO Japan WorkGroup というワーキンググループを中心に普及活動等をしています。
@@ -40,7 +52,7 @@ FIDO Alliance では U2F と UAF のふたつの仕様がすでに存在しま�
 FIDO UAF は Universal Authentication Framework の略で、主にスマートフォンでパスワードレス認証を行うための仕様です。
 一方 U2F は、Universal 2nd Factor の略で、USBなどのいわゆる「ドングル」を利用して、 Web での2段階認証を行うための仕様です。
 
-そして、本書で開設する Web Authentication API は、UAF/U2F を FIDO1.0 とするならば、FIDO2 プロジェクトの一部で、
+そして、本書で開設する Web Authentication API は、FIDO2 プロジェクトの一部で、
 U2F をベースとしつつも、Web でもスマートフォンでも利用可能なパスワードレス認証の仕様となっています。
 
 == FIDO の基本コンセプト
@@ -72,7 +84,7 @@ FIDO で策定されているすべての仕様は、チャレンジレスポン
 
 === Authenticator を用いた秘密鍵の生成と保護
 
-FIDO の認証では、公開鍵暗号方式に必要なキーペアの管理を Authenticator が担います。Authenticator とは YubiKey といった外部デバイス、あるいは PC やスマートフォンといったデバイスです。
+FIDO の認証では、公開鍵暗号方式に必要なキーペアの管理を Authenticator が担います。
 
 Authenticator とは、 YubiKey のような USB デバイスや、スマートフォンそのものであり、
 ざっくりと U2F では YubiKey のような外部デバイスが Authenticator として動作し、
@@ -85,9 +97,9 @@ FIDO 認証では Authenticator から秘密鍵が外部に漏れないようセ
 === origin に紐づく認証情報の管理
 
 Authenticator は、各 origin ごとのキーペアの生成と Challenge への署名を行います。
-origin ごとにキーペアを生成することで、中間者攻撃や、認証情報の串刺し検索でのプライバシー侵害を防ぐことができます。
+origin ごとにキーペアを生成することで、中間者攻撃や、サービスを跨いだ認証情報の串刺し検索でのプライバシー侵害を防ぐことができます。
 
-たとえば、攻撃者がフィッシングサイトを作り、別の origin 用の認証リクエストをユーザーに送信したとしても、異なる origin に対して署名を送信することはありません。
+また origin に紐づいた認証であるため、攻撃者がフィッシングサイトを作り、別の origin 用の認証リクエストをユーザーに送信したとしても、異なる origin に対して署名を送信することはありません。
 あるいはユーザーが悪意ある origin 向けに作成したキーペア、あるいは署名では、正規の origin で認証ができません。
 このように origin に紐づいた認証情報によって中間者攻撃をプロトコルレベルで防いでいます。
 
@@ -103,7 +115,7 @@ origin ごとにキーペアを生成することで、中間者攻撃や、認�
 Authenticator はキーペアの生成、秘密鍵での署名の際にユーザー認証を行います。
 具体的には YubiKey にタッチする行為（User Presence）や、スマホの PIN や 指紋認証（User Verification）があります。
 
-この認証の特徴的なのは、ユーザーと Authenticator との間で行われるローカルでの認証であることです。
+この認証の特徴的なのは、ユーザーと Authenticator との間で行われるローカル認証であることです。
 よってユーザーは必ずデバイスを所持し明確な認証ジェスチャーを行わなければならず、遠隔からの操作で認証情報を盗まれるリスクが軽減されます。
 また、デバイス上でPINや生体認証を用いてユーザーの本人確認をする際、PINや生体認証情報はデバイス内に保存され外部に漏れることはありません。
 
@@ -116,24 +128,23 @@ Authenticator はキーペアの生成、秘密鍵での署名の際にユーザ
 == FIDO2
 
 このような技術を利用して FIDO の基本コンセプトである シンプルな操作 と セキュアなログイン が実現されています。
-
 この基本コンセプトをを理解したところで、本書のメインコンテンツである WebAuthn を含む FIDO2 プロジェクトについて解説したいと思います。
 
 === FIDO2 プロジェクトとは
 
-FIDO2 プロジェクトとは、本書で開設する W3Cの Web Authentication API（WebAuthn） と
-Client と Authenticator との通信を規定した Client To Authenticator Protocol（CTAP）
-で構成されているプロジェクトの総称です。
-これは UAF はモバイルアプリでしか、U2FはWeb認証でしかつかえない@<fn>{fido1_issue} といったように
-特定のデバイスやブラウザに依存する認証ではなく、@<b>{どのデバイスでも、どのプラットフォームでも}利用可能な
+FIDO2 プロジェクト（以下FIDO2）とは、Web や拡大していくエコシステムに向けたFIDO認証のスタンダードを形成する、複数の、連動する新しい取り組みです。
+FIDO2 は W3Cによる Web Authentication API（WebAuthn） と Client と FIDO Alliance による
+ Authenticator との通信を規定した Client To Authenticator Protocol（CTAP）のことを指します。@<fn>{fido2-project}
+
+つまり特定のデバイスやブラウザに依存する認証ではなく、@<b>{どのデバイスでも、どのプラットフォームでも}利用可能な
 より相互運用性の高いエコシステムの構築を目的としたプロジェクトです。
 
 W3C や 各OSベンダーの貢献のおかげで、主要3ブラウザ、Google Chrome, Microsoft Edge, Mozilla Firefox が 
-WebAuthn 対応を発表しており、β版も含めてすべてのブラウザで実装が進んでいます。
-同時にプラットフォームAPIも WebAuthn や CTAP2 に対応が進んでおり、近い将来ブラウザからもネイティブアプリケーション
-からも、同じ WebAuthn のAPIを呼んで認証ができるようになるでしょう。
+WebAuthn 対応を発表しており、それらのブラウザで実装が進んでいます。
+同時にプラットフォームAPIも WebAuthn や CTAP2 対応が進んでおり、近い将来ブラウザからもネイティブアプリケーション
+からも、同じ WebAuthnベース のAPIを呼んで認証ができるようになるでしょう。
 
-//footnote[fido1_issue][厳密にはUAFをウェブ認証の要素として利用したり、U2Fをモバイルで利用することは不可能ではない]
+//footnote[fido2-project][https://fidoalliance.org/fido2/ より]
 
 ====[column] FIDO2 という名称について
 
@@ -150,7 +161,7 @@ CTAP2のプロトコル上では CTAP2 対応であることを示す識別子�
 という文字列が使われているため、これらはあながち間違いではないことが
 余計に事態をややこしくしているのでは、と個人的には感じています。
 
-//list[ctap2_getinfo][CTAP2 デバイスの getInfo メソッドの戻り値、何故 "CTAP2" とかではなく FIDO_2_0 なのか…。]{
+//list[ctap2_getinfo][CTAP2 デバイスの getInfo メソッドの戻り値]{
 versions: ['U2F_V2', @<b>{'FIDO_2_0'}], 
 extensions: ['hmac-secret'], 
 aaguid: h'f8a011f38c0a4d15800617111f9edc7d', 
@@ -162,10 +173,4 @@ options: {
 max_message_size: 1200,
 pin_protocols: [1]
 //}
-
-
-
-=== 対応状況
-
-#@# 余裕あれば書く
 
