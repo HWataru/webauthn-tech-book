@@ -13,15 +13,17 @@ FIDO の文脈における RP（Relying Party）とは認証を委任するサ�
 
 Platform API は、Platform、つまり PC や スマートフォンに登載された TPM や TEE といったセキュアチップと通信を行います。
 PIN あるいはデバイスに登載された生体認証デバイスによって、セキュアチップ上での秘密鍵の生成や保存のための認証が行われます。
-
+つまり、スマートフォンに登載された指紋デバイスなどで、Webの認証が可能になります。
 Internal Authenticator を利用する API は、ネイティブアプリケーション、あるいは Web ブラウザーから呼び出せるようになっています。
 Android や、Windows 10 では が利用できるかどうかは isUserVerifyingPlatformAuthenticatorAvailable() というメソッドで判定ができるようになっているようです。
+
+一方 CTAP は YubiKey などの外部 Authenticator との通信仕様を定めており、これにより USB等で接続された外部デバイスで Web 認証が可能になります。
 
 == CTAP
 
 CTAP とは Client to Authenticator Protocol@<fn>{CTAP} の略で、Client が roaming Authenticator と通信するための仕様です。
-roaming Authenticator とは、持ち運びが可能な外付けの認証デバイスであり、 
-CTAP では Client と USB/NFC/Bluetooth のいずれかで通信するように定められています。
+roaming Authenticator とは、持ち運びが可能な外付けの認証デバイスであり、 CTAP では Client と USB/NFC/Bluetooth のいずれかで通信するように定められています。
+YubiKey や Google の Titan Key などが、有名です。
 
 CTAP には CTAP1 と CTAP2 が存在し、CTAP1 は U2F プロトコルを指します。
 一方 CTAP2 は CTAP1 を拡張した規格です。CTAP2 では CTAP1 では実現できなかったパスワードレス認証や、PIN や 生体認証を利用したマルチファクター認証がスペックとして追加されています。
@@ -61,7 +63,7 @@ navigator.credentials.get({publicKey: PublicKeyCredentialRequestOptions})
 
 //footnote[CDM][Credential Management API : @<href>{https://www.w3.org/TR/credential-management-1/}]
 
-=== Create a New Credential
+=== Credential の作成
 
 @<img>{WebAuthn_Registration_r4} は MDN Web docs に記載されている WebAuthn の登録フローです。
 
@@ -130,14 +132,17 @@ Authenticator 上で、アカウント情報を表示する際などに利用さ
 @<strong>{pubKeyCredParams} は、 Authenticator が使用する署名アルゴリズムを指しており、
 WebAuthn では "-7": ES256 (ECDSA w/ SHA-256) および、"-257": RS256 (RSASSA-PKCS1-v1_5 w/ SHA-256) の
 2つの署名アルゴリズムのいずれか、あるいは両方を指定できます。
-現在利用できる Authenticator でいうと Windows Hello で利用する TPM が RS256 を、
+現在利用できる Authenticator でいうと Windows Hello で利用する TPM が RS256 を、@<fn>{tpm}
 それ以外の Authenticator が ES256 を利用しています。
 
+//footnote[tpm][Windows Hello 以外で RS256 を利用する Authenticator は出てこないんじゃないかなと思われる]
 
-=== PublicKeyCredential --credentails.create({pulbickey})--
+=== Credential Create の戻り値
 
 navigator.credentials.create() メソッドで公開鍵暗号ベースの Credential を作成しようとすると、Authenticator へこれらの情報が送られます。
-Authenticator は Credential を作成するためにユーザー認証を行います。
+Authenticator は Credential を作成するためにユーザー認証を行います。@<fn>{up-uv}
+
+//footnote[up-uv][User Presence および User Verification（詳しくはコラム参照）]
 
 ユーザー認証が完了すると Authenticator は作成した Credentail を Client に返します。
 レスポンスは、PublicKeyCredential として navigator.credentials.create() の返す Promise オブジェクトの戻り値として返されます。
@@ -202,7 +207,8 @@ YubiKey など、生体認証を利用できない Authenticator などでは、
 ちなみに Android や Microsoft Hello で利用する PIN は、User Verification も兼ねているようです。
 おそらく、PIN の入力をローカルリソースからでなければできないような仕組みにしているのだと思いますが詳細は不明です。
 
-=== Use an Existing Credential to Make an Assertion
+==={assertion-label} 作成した Credential を利用した認証
+
 
 作成された PublicKeycredential はサーバーに送られ次回以降の認証で利用されます。
 一方 Authenticator も CredentialId と PublicKeycredential の組み合わせを記憶しており、次回の認証時に CredentailId を直接指定することも可能で、
@@ -211,7 +217,7 @@ YubiKey など、生体認証を利用できない Authenticator などでは、
 認証の際は navigator.credentials.get() に {publicKey: PublicKeyCredentialRequestOptions} といった形のオプションを指定し、既存の PublicKeyCredential を取得します。
 @<list>{get} は @<list>{create} で生成した、 3C B4 0D 54... という CredentailId で指定する PublicKeycredential を利用して認証をするというリクエストです。
 
-//listnum[get][navigator.credentials.get()][js]{
+//listnum[get][navigator.credentials.get メソッド]{
 
 navigator.credentials.get({
     publicKey: {
@@ -246,6 +252,7 @@ response には AuthenticatorAssertionResponse がセットされ、publicKey �
 代わりに authenticatorData と signature が返されます。
 
 //listnum[AuthenticatorAssertionResponse][AuthenticatorAssertionResponse]{
+{
     rawId: [ArrayBuffer] (32 bytes)
         3C B4 0D 54 85 0C 2A 39 EF 4F 9B A5 E7 5C 66 72
         C1 CB 8D 02 54 66 0A 0B 88 07 AE 09 4A 55 08 6D,
@@ -278,14 +285,53 @@ authenticatordata と clientDatan の SHA256 ハッシュを計算した clientD
 
 //footnote[verifying-assertion][https://w3c.github.io/webauthn/#verifying-assertion]
 
-== まとめ
+=== WebAuthn のポイント
 
-以上が webauthn の Credential の作成および、保存された Credential を用いた認証の流れです。
-WebAuthn のポイントとしては次の3つが挙げられます。
+ここまでが Webauthn の Credential の作成および、保存された Credential を用いた認証の基本的な流れです。
+WebAuthn のポイントとしては次の4つです。
 
     1. Web Authentication API は 公開鍵暗号を利用したチャレンジレスポンス認証
     1. Web Authentication API は Credential Management API の拡張として定義
     1. API は credentials.create() と credentials.get() のふたつの認証API
+    1. CredentialId を利用して、認証に用いる Credentail を指定する
 
 WebAuthn には今回は説明しませんでしたが、UserVerification を求めるオプションや、
 Authenticator内に認証情報を保存してユーザー名を入れずにパスワードレス認証を行う仕様もあります。
+
+=== Attestation について
+
+ここまでの解説で、説明を省いた Attestation について説明します。
+Attestation は Credential の生成時に、Authenticator から返され、
+主に は Authenticator で生成された publicKey が、「どのような Authenticator 上で生成されたものか」を RP が確認するために用いられます。
+これは主にエンタープライズ向けに信頼された Authenticator のみを利用するように制限するといった、ユースケースで用いられます。
+デフォルトのオプションでは Attestation は Client で削除され、RPには送られません。そのため、Attestation が必要な場合は、明示的なオプションを指定してやる必要があります。
+
+//listnum[attestation][AttestationConveyancePreference]{
+let publicKeyCredentialCreationOptions = {
+    challenge: challenge,
+    rp: { name: "ACME Corporation"},
+    user: {
+        id: userId
+        displayName: "watahani",
+    },
+
+    pubKeyCredParams: [...]
+
+    attestation = "direct";
+}
+//}
+
+さて、Attestation にはいくつか種類があるのですが、いずれも Authenticator 内で、ClientData と rpId などに Attestation Private Key で署名を行い、
+サーバー側で Private Key に対応する Public Key を含む証明書などで署名の検証、証明書チェインの検証を行います。
+たとえば、もっともシンプルな U2F Attestation では、YubiKey内部に埋め込まれた Attestaion Private Key で rpId, clientDataHash, credentialId, publicKey に対して署名（Attestation signature）を生成します。
+同時に Yubico の Root CA に署名された Attestation Certificate とともに AttestationObject としてサーバーに返すことによって、署名の検証および、証明書の検証をすることができます。
+Attestationの検証を行うことによって、Authenticator から返された CredentialId と publicKey が、正規の YubiKey で生成されたことが確認できます。
+
+//image[u2f_attestation][U2F attestation]
+
+なお、Attestation の情報に関しては FIDO Metadata Service という、Authenticator の Attestation 等を登録するサービスがあり、各 Authenticator の情報が取得できるようになる予定ですが
+現在のところ、登録された Authenticator はほとんどなく、あまり活用されているようではありません。
+
+=== ResidentKey について
+
+
