@@ -103,7 +103,7 @@ origin ごとにキーペアを生成することで、中間者攻撃や、サ�
 Authenticator はキーペアの生成、秘密鍵での署名の際にユーザー認証を行います。
 具体的には YubiKey にタッチする行為（User Presence）や、スマホの PIN や 指紋認証（User Verification）があります。
 
-この認証の特徴的なのは、ユーザーと Authenticator との間で行われるローカルでの認証であることです。
+この認証の特徴的なのは、ユーザーと Authenticator との間で行われるローカル認証であることです。
 よってユーザーは必ずデバイスを所持し明確な認証ジェスチャーを行わなければならず、遠隔からの操作で認証情報を盗まれるリスクが軽減されます。
 また、デバイス上でPINや生体認証を用いてユーザーの本人確認をする際、PINや生体認証情報はデバイス内に保存され外部に漏れることはありません。
 
@@ -116,24 +116,23 @@ Authenticator はキーペアの生成、秘密鍵での署名の際にユーザ
 == FIDO2
 
 このような技術を利用して FIDO の基本コンセプトである シンプルな操作 と セキュアなログイン が実現されています。
-
 この基本コンセプトをを理解したところで、本書のメインコンテンツである WebAuthn を含む FIDO2 プロジェクトについて解説したいと思います。
 
 === FIDO2 プロジェクトとは
 
-FIDO2 プロジェクトとは、本書で開設する W3Cの Web Authentication API（WebAuthn） と
-Client と Authenticator との通信を規定した Client To Authenticator Protocol（CTAP）
-で構成されているプロジェクトの総称です。
-これは UAF はモバイルアプリでしか、U2FはWeb認証でしかつかえない@<fn>{fido1_issue} といったように
-特定のデバイスやブラウザに依存する認証ではなく、@<b>{どのデバイスでも、どのプラットフォームでも}利用可能な
+FIDO2 プロジェクト（以下FIDO2）とは、Web や拡大していくエコシステムに向けたFIDO認証のスタンダードを形成する、複数の、連動する新しい取り組みです。
+FIDO2 は W3Cによる Web Authentication API（WebAuthn） と Client と FIDO Alliance による
+ Authenticator との通信を規定した Client To Authenticator Protocol（CTAP）のことを指します。@<fn>{fido2-project}
+
+つまり特定のデバイスやブラウザに依存する認証ではなく、@<b>{どのデバイスでも、どのプラットフォームでも}利用可能な
 より相互運用性の高いエコシステムの構築を目的としたプロジェクトです。
 
 W3C や 各OSベンダーの貢献のおかげで、主要3ブラウザ、Google Chrome, Microsoft Edge, Mozilla Firefox が 
-WebAuthn 対応を発表しており、β版も含めてすべてのブラウザで実装が進んでいます。
-同時にプラットフォームAPIも WebAuthn や CTAP2 に対応が進んでおり、近い将来ブラウザからもネイティブアプリケーション
-からも、同じ WebAuthn のAPIを呼んで認証ができるようになるでしょう。
+WebAuthn 対応を発表しており、それらのブラウザで実装が進んでいます。
+同時にプラットフォームAPIも WebAuthn や CTAP2 対応が進んでおり、近い将来ブラウザからもネイティブアプリケーション
+からも、同じ WebAuthnベース のAPIを呼んで認証ができるようになるでしょう。
 
-//footnote[fido1_issue][厳密にはUAFをウェブ認証の要素として利用したり、U2Fをモバイルで利用することは不可能ではない]
+//footnote[fido2-project][https://fidoalliance.org/fido2/ より]
 
 ====[column] FIDO2 という名称について
 
@@ -162,10 +161,4 @@ options: {
 max_message_size: 1200,
 pin_protocols: [1]
 //}
-
-
-
-=== 対応状況
-
-#@# 余裕あれば書く
 
