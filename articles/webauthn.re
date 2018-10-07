@@ -67,6 +67,7 @@ navigator.credentials.get({publicKey: PublicKeyCredentialRequestOptions})
 
 @<img>{WebAuthn_Registration_r4} は MDN Web docs に記載されている WebAuthn の登録フローです。
 
+//image[WebAuthn_Registration_r4][Registration* https://developer.mozilla.org/ja/docs/Web/API/Web_Authentication_API]
 
 Credential Management API のメソッドである navigator.credentials.create() の引数である、CredentialCreationOptions 
 として、{ publicKey: options } といった形で WebAuthn で利用するオプションを渡しています。
@@ -75,11 +76,11 @@ Credential Management API のメソッドである navigator.credentials.create(
 
 もっともシンプルな例として @<list>{create} を見てみましょう。
 
-//image[WebAuthn_Registration_r4][Registration* https://developer.mozilla.org/ja/docs/Web/API/Web_Authentication_API]
-
-@<list>{create} は必須のオプションのみ指定しました。
+@<list>{create} は必須のオプションのみ指定した credentials.create() メソッドの例です。
 @<strong>{challenge} は rpサーバーから送られるランダムなバイト列です。この例では、説明のため js 上で生成していますが、
 他のパラメータ含め、通常サーバー側から送られることに注意してください。
+
+//pagebreak
 
 //listnum[create][navigator.credentails.create()][js]{
 
@@ -309,7 +310,7 @@ ResidentKey を利用するには FIDO2 対応の YubiKey 5 や Security Key by 
 
 //footnote[win10][Windows Hello でも ResidentKey オプションは動作します]
 
-==== Credential の作成
+==== ResidentKey を利用した Credential の作成
 
 ユーザー情報を入力することなく認証を行うために ResidentKey では Credential をデバイス内に保存します。
 @<list>{authenticatorselection} は、 publicKeyCredentialCreationOptions の authenticatorSelection オプションで、
@@ -339,7 +340,7 @@ PIN の入力と YubiKey へのタッチが完了すると Credential が YubiKe
 //image[regidentKey_make][ResidentKey を利用した Credentail の生成]
 
 
-==== Credential の利用
+==== ResidentKey を利用した Credential の利用
 
 一方認証の際には、今まで RP から allowCredentials として送信していた CredentialId は不要になります。
 ゆえに allowCredentials は空にし、rpId のみ指定して credentials.get() メソッドを呼び出します。
