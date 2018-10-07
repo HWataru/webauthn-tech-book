@@ -109,14 +109,14 @@ navigator.credentials.create({
 
 //}
 
-@<list>{webauthnAPI} は必須のオプションのみ指定しました。
+@<list>{create} は必須のオプションのみ指定しました。
 @<strong>{challenge} は rpサーバーから送られるランダムなバイト列です。この例では、説明のため js 上で生成していますが、
 他のパラメータ含め、通常サーバー側から送られることに注意してください。
 
 @<strong>{rp} は認証先のRPに関するパラメーターで、@<strong>{name} は必須のパラメーターです。
 @<strong>{id} は省略可能なパラメーターで、省略した場合は現在アクセスしている origin のドメイン名と同一の値になります。
 また、@<strong>{rp.id} を直接指定することも可能です。
-例えば subdomain.example.com 上で、rp.id を指定しない場合、暗黙的に rp.id は subdomain.example.com になります。
+たとえば subdomain.example.com 上で、rp.id を指定しない場合、暗黙的に rp.id は subdomain.example.com になります。
 しかし、subdomain.example.com 上では、@<strong>{rp.id} としてexample.com を指定することも可能です。
 そうしたばあい、 *.example.com で使いまわすことが可能な認証情報を作成することが可能です。
 
