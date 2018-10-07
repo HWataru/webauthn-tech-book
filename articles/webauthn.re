@@ -361,7 +361,7 @@ User Verification と User Presence が確認できたのち、Authenticator は
 Client はユーザーに対し、Authenticator が返した Credential のリストを提示しユーザーが選択した Credentail情報（signature 含む）を RP に送ります。
 その際、 UserHandle と呼ばれるパラメータ（実際には登録の際の user.id）も RP に送られ、 RP でユーザーを特定するのに利用されます。
 
-//image[regidentKey_auth][ResidentKey を利用したユーザネームレス認証]
+//image[residentKey_auth][ResidentKey を利用したユーザネームレス認証]
 
 ここでは　User Verification の説明のために PIN の入力フローも合わせて説明しましたが、実際には User Verification なしでの ResidentKey の利用も可能です。
 キーボードがなくユーザー名や PIN の入力が難しかったり、手袋を利用していて YubiKey のタップが難しい現場などでは、NFCを利用してワンタップログインといった運用が可能です。
