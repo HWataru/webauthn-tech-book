@@ -4,8 +4,8 @@
 
 //image[webauthn_overview][FIDO2 Overview]
 
-@<img>{webauthn_overview} は Web Authentication API（以下WebAuthn） と Platform および、External Authenticator の関係図です。
-FIDO の文脈における RP（Relying Party）とは認証を委任するサーバーを指し、一般には Id Provider などの ID 提供者であることが多いです。
+@<img>{webauthn_overview} は Web Authentication API（以下WebAuthn） と Platform, および、External Authenticator の関係図です。
+FIDO の文脈における RP（Relying Party）とは Authenticator に認証を委任するサーバーを指し、一般には Id Provider などの ID 提供者であることが多いです。
 
 前章で解説したとおり、FIDO2.0 は WebAuthn と、 CTAP1/CTAP2 および Platform API を、
 それぞれの OS,Browser ベンダーが実装して実現するプロジェクトです。
@@ -170,7 +170,7 @@ PublicKeyCredential は@<list>{PublicKeyCredential} のような形となりま�
 
 id は、@<strong>{CredentialId} と呼ばれ生成された PublicKeycredential を一意に定めるIDです。
 @<strong>{response} は @<strong>{AuthenticatorAttestationResponse} と呼ばれ、 clientDataJSON および AttestationObject を含むオブジェクトです。 
-@<strong>{clientDataJSON} は、Client（ブラウザー）で生成された @<strong>{challenge} を含むデータで、実際には JSON を Base64 エンコードしたバイト配列です。
+@<strong>{clientDataJSON} は、Client（ブラウザー）で生成された @<strong>{challenge} を含むデータで、実際には JSON を Base64Url エンコードしたバイト配列です。
 origin の検証、Attestationの検証に利用されます。
 
 //listnum[clientDataJSON][clientDataJSON type は webauthn.create もしくは webauthn.get]{
