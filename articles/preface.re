@@ -41,9 +41,9 @@ WebAuthn の 具体的な実装、とりわけ Webブラウザで実装中の AP
 
 == お問い合わせ先
 
-本書に関するお問い合わせ： twitter @watahani
+本書に関するお問い合わせ： twitter @<href>{https://twitter.com/watahani,@watahani}
 
-リポジトリ：https://github.com/motohonya/webauthn-tech-book
+リポジトリ： @<href>{https://github.com/motohonya/webauthn-tech-book}
 
 == 免責事項
 
