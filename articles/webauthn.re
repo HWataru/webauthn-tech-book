@@ -30,11 +30,11 @@ CTAP には CTAP1 と CTAP2 が存在し、CTAP1 は U2F プロトコルを指�
 
 //footnote[CTAP][Client To Authenticator Protocol: https://fidoalliance.org/specs/fido-v2.0-id-20180227/fido-client-to-authenticator-protocol-v2.0-id-20180227.html]
 
-====[column] U2F と CTAP1
+====[column] U2F と CTAP
 
 WebAuthn では U2Fプロトコルに対応した Authenticator を利用することが可能です。
 少し説明が難しいのですが WebAuthn と従来の U2Fプロトコルとは一部パラメータ等が異なります。
-具体的には U2F では AppID、WebAuthn では RP ID と呼ばれているパラメータが異なっており、、前者がプロトコル名 (https://) を含むのに対し、後者は ドメイン名しか含みません。
+具体的には U2F では AppID、WebAuthn では RP ID と呼ばれているパラメータが異なっており、前者がプロトコル名 (https://) を含むのに対し、後者は ドメイン名しか含みません。
 そのため、現在 U2F で認証をしているサービスをそのまま、WebAuthn に切り替えることはできません。
 ただし、WebAuthn のスペックには、この差を埋めるための Extension（AppIdExtention） が定義されており、
 U2Fの認証サービスから WebAuthn への切り替えをスムーズにするための工夫がされています。
