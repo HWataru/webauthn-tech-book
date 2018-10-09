@@ -254,7 +254,7 @@ response には AuthenticatorAssertionResponse がセットされ、publicKey �
 代わりに authenticatorData と signature が返されます。
 
 ClientData は credentials.create() の際の @<list>{clientDataJSON}同様で、type のみ webauthn.get となっています。
-authenticatorData は、さまざまなデータを含みますが、今は RP ID Hash, 1yte の　Flags（UP,UV の結果を含む）, Counter が含まれるものだと思ってください。
+authenticatorData は、さまざまなデータを含みますが、今は RP ID Hash, 1byte の　Flags（UP,UV の結果を含む）, Counter が含まれるものだと思ってください。
 
 @<strong>{signature} は credentials.get() で作成した publicKey に対応する秘密鍵で作成した署名で、
 authenticatordata と clientDatan の SHA256 ハッシュを計算した clientDataHash を結合したバイト配列に対して行われます。
