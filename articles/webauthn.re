@@ -127,7 +127,7 @@ navigator.credentials.create({
 そうした場合、 *.example.com で使いまわすことが可能な Credential を作成することが可能です。
 
 @<strong>{user} は Credential を利用するユーザーに関するパラメーターです。
-@<strong>{displayName} は、@<strong>{rp.name} と合わせて、ユーザーへの同意画面で利用されたり、
+@<strong>{displayName} は、@<strong>{rp.name} と合わせて、ユーザーへの同意画面や、
 Authenticator 上で、アカウント情報を表示する際などに利用されます。
 @<strong>{user.id} はサービス固有の ID で利用者に対して表示することはありませんが必ずユニークな id である必要があります。
 一般的にはサービスの内部で利用しているユーザーのユニークidを利用することになるでしょう。
