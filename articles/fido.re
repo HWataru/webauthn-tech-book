@@ -133,8 +133,8 @@ Authenticator はキーペアの生成、秘密鍵での署名の際にユーザ
 === FIDO2 プロジェクトとは
 
 FIDO2 プロジェクト（以下FIDO2）とは、Web や拡大していくエコシステムに向けたFIDO認証のスタンダードを形成する、複数の、連動する新しい取り組みです。
-FIDO2 は W3Cによる Web Authentication API（WebAuthn） と Client と FIDO Alliance による
- Authenticator との通信を規定した Client To Authenticator Protocol（CTAP）のことを指します。@<fn>{fido2-project}
+FIDO2 は W3Cによる Web Authentication API（WebAuthn） と、
+FIDO Alliance による Client と Authenticator との通信を規定した Client To Authenticator Protocol（CTAP）のことを指します。@<fn>{fido2-project}
 
 つまり特定のデバイスやブラウザに依存する認証ではなく、@<b>{どのデバイスでも、どのプラットフォームでも}利用可能な
 より相互運用性の高いエコシステムの構築を目的としたプロジェクトです。
