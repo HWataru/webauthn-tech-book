@@ -15,7 +15,7 @@ Platform API は、Platform、つまり PC や スマートフォンに登載さ
 PIN あるいはデバイスに登載された生体認証デバイスによって、セキュアチップ上での秘密鍵の生成や保存のための認証が行われます。
 つまり、スマートフォンに登載された指紋デバイスなどで、Webの認証が可能になります。
 Internal Authenticator を利用する API は、ネイティブアプリケーション、あるいは Web ブラウザーから呼び出せるようになっています。
-Android や、Windows 10 では が利用できるかどうかは isUserVerifyingPlatformAuthenticatorAvailable() というメソッドで判定ができるようになっているようです。
+Android や、Windows 10 で Internal Authenticator が利用できるかどうかは isUserVerifyingPlatformAuthenticatorAvailable() というメソッドで判定ができるようになっているようです。
 
 一方 CTAP は YubiKey などの外部 Authenticator との通信仕様を定めており、これにより USB等で接続された外部デバイスで Web 認証が可能になります。
 
@@ -49,7 +49,7 @@ Credential Management API にはたった2つのメソッドが定義されて�
 WebAuthn ではこの2つのメソッドに、公開鍵を利用した資格情報を作成するためのオプションである、
 PublicKeyCredentialCreationOptions や PublicKeyCredentialRequestOptions を指定して、Credential を作成します。
 
-//listnum[PublicKeycredential][2つのメソッドと、2つのオプション][js]{
+//listnum[PublicKeyCredential][2つのメソッドと、2つのオプション][js]{
 
 navigator.credentials.create({publicKey: PublicKeyCredentialCreationOptions})
 
@@ -168,7 +168,7 @@ PublicKeyCredential は@<list>{PublicKeyCredential} のような形となりま�
 }
 //}
 
-id は、@<strong>{CredentialId} と呼ばれ生成された PublicKeycredential を一意に定めるIDです。
+id は、@<strong>{CredentialId} と呼ばれ生成された PublicKeyCredential を一意に定めるIDです。
 @<strong>{response} は @<strong>{AuthenticatorAttestationResponse} と呼ばれ、 clientDataJSON および AttestationObject を含むオブジェクトです。 
 @<strong>{clientDataJSON} は、Client（ブラウザー）で生成された @<strong>{challenge} を含むデータで、実際には JSON を Base64Url エンコードしたバイト配列です。
 origin の検証、Attestationの検証に利用されます。
@@ -212,12 +212,12 @@ YubiKey など、生体認証を利用できない Authenticator などでは、
 
 === 作成した Credential を利用した認証（Assersion）
 
-作成された PublicKeycredential はサーバーに送られ次回以降の認証で利用されます。
-一方 Authenticator も CredentialId と PublicKeycredential の組み合わせを記憶しており、次回の認証時に CredentailId を直接指定することも可能で、
+作成された PublicKeyCredential はサーバーに送られ次回以降の認証で利用されます。
+一方 Authenticator も CredentialId と PublicKeyCredential の組み合わせを記憶しており、次回の認証時に CredentailId を直接指定することも可能で、
 サーバーに送った公開鍵に対応する秘密鍵を取り出すことが可能になっています。
 
 認証の際は navigator.credentials.get() に {publicKey: PublicKeyCredentialRequestOptions} といった形のオプションを指定し、既存の PublicKeyCredential を取得します。
-@<list>{get} は @<list>{create} で生成した、 3C B4 0D 54... という CredentailId で指定する PublicKeycredential を利用して認証をするというリクエストです。
+@<list>{get} は @<list>{create} で生成した、 3C B4 0D 54... という CredentailId で指定する PublicKeyCredential を利用して認証をするというリクエストです。
 
 //listnum[get][navigator.credentials.get メソッド]{
 
@@ -240,7 +240,7 @@ navigator.credentials.get({
 //}
 
 @<strong>{challenge} は先ほどと同様にサーバーから送られるランダムなバイト配列です。
-今回は id(3C B4 0D...) に対応する PublicKeycredential で、Challenge に署名をして返します。
+今回は id(3C B4 0D...) に対応する PublicKeyCredential で、Challenge に署名をして返します。
 
 このメソッドが呼ばれると Client は接続している Authenticator を列挙し、サーバーから送られた CredentailId に対応する Authenticator を探します。
 ユーザーの認証処理が完了すると、Authenticator は CredentialId に対応する PublicKeyCredential を返します。

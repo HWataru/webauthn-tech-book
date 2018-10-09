@@ -154,7 +154,7 @@ WebAuthn 対応を発表しており、それらのブラウザで実装が進�
 エコシステム全体のプロジェクト名であり FIDO2 という仕様があるわけではないことです。
 しかし Security Key by Yubico など「FIDO2 対応」と呼ばれる製品は、
 のちに説明する CTAP2（Client To Authentication Protocol 2）を指して FIDO2 と言っていたり、
-Microsoft Hello で利用可能という意味で「FIDO2」対応と言っていたり（ほぼ CATP2 対応と同義）、
+Microsoft Hello で利用可能という意味で「FIDO2」対応と言っていたり（ほぼ CTAP2 対応と同義）、
 あるいは単に WebAuthn のことを FIDO2 と言っていたりと、
 人によって FIDO2 が指す領域が異なっているので注意が必要です。
 CTAP2のプロトコル上では CTAP2 対応であることを示す識別子として "fido2"
