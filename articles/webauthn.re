@@ -59,7 +59,7 @@ navigator.credentials.get({publicKey: PublicKeyCredentialRequestOptions})
 
 
 通常これらのオプションは、サービス提供者のポリシーや、ユーザーの選択によってパラメーターを変更することになります。
-ただしオプションに関しては数も非常に多く、複雑であるため、本書では基本的な流れをとらえてるためシンプルなオプションで解説をすすめたいと思います。
+ただしオプションに関しては数も非常に多く、複雑なので、本書では基本的な流れをとらえるためにシンプルなオプションで解説をすすめたいと思います。
 
 //footnote[CDM][Credential Management API : @<href>{https://www.w3.org/TR/credential-management-1/}]
 
