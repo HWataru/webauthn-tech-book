@@ -210,7 +210,7 @@ YubiKey など、生体認証を利用できない Authenticator などでは、
 ちなみに Android や Microsoft Hello で利用する PIN は、User Verification も兼ねているようです。
 おそらく、PIN の入力をローカルリソースからでなければできないような仕組みにしているのだと思いますが詳細は不明です。
 
-=== 作成した Credential を利用した認証（Assersion）
+=== 作成した Credential を利用した認証（Assertion）
 
 作成された PublicKeyCredential はサーバーに送られ次回以降の認証で利用されます。
 一方 Authenticator も CredentialId と PublicKeyCredential の組み合わせを記憶しており、次回の認証時に CredentailId を直接指定することも可能で、
