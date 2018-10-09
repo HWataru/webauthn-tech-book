@@ -124,7 +124,7 @@ navigator.credentials.create({
 また、@<strong>{rp.id} を直接指定することも可能です。
 たとえば subdomain.example.com 上で、rp.id を指定しない場合、暗黙的に rp.id は subdomain.example.com になります。
 しかし、subdomain.example.com 上では、@<strong>{rp.id} としてexample.com を指定することも可能です。
-そうしたばあい、 *.example.com で使いまわすことが可能な Credential を作成することが可能です。
+そうした場合、 *.example.com で使いまわすことが可能な Credential を作成することが可能です。
 
 @<strong>{user} は Credential を利用するユーザーに関するパラメーターです。
 @<strong>{displayName} は、@<strong>{rp.name} と合わせて、ユーザーへの同意画面で利用されたり、
