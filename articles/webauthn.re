@@ -23,7 +23,7 @@ Android や、Windows 10 で Internal Authenticator が利用できるかどう�
 
 CTAP とは Client to Authenticator Protocol@<fn>{CTAP} の略で、Client が roaming Authenticator と通信するための仕様です。
 roaming Authenticator とは、持ち運びが可能な外付けの認証デバイスであり、 CTAP では Client と USB/NFC/Bluetooth のいずれかで通信するように定められています。
-YubiKey や Google の Titan Key などが、有名です。
+YubiKey や Google の Titan Key などが有名です。
 
 CTAP には CTAP1 と CTAP2 が存在し、CTAP1 は U2F プロトコルを指します。
 一方 CTAP2 は CTAP1 を拡張した規格です。CTAP2 では CTAP1 では実現できなかったパスワードレス認証や、PIN や 生体認証を利用したマルチファクター認証がスペックとして追加されています。
