@@ -254,7 +254,7 @@ response には AuthenticatorAssertionResponse がセットされ、publicKey �
 代わりに authenticatorData と signature が返されます。
 
 ClientData は credentials.create() の際の @<list>{clientDataJSON}同様で、type のみ webauthn.get となっています。
-authenticatorData は、さまざまなデータを含みますが、今は RP ID Hash, 1byte の　Flags（UP,UV の結果を含む）, Counter が含まれるものだと思ってください。
+authenticatorData は、さまざまなデータを含みますが、今は RP ID Hash, 1byte の Flags（UP,UV の結果を含む）, Counter が含まれるものだと思ってください。
 
 @<strong>{signature} は credentials.get() で作成した publicKey に対応する秘密鍵で作成した署名で、
 authenticatordata と clientDatan の SHA256 ハッシュを計算した clientDataHash を結合したバイト配列に対して行われます。
@@ -366,7 +366,7 @@ Client はユーザーに対し、Authenticator が返した Credential のリ�
 
 //image[residentKey_auth][ResidentKey を利用したユーザネームレス認証]
 
-ここでは　User Verification の説明のために PIN の入力フローも合わせて説明しましたが、実際には User Verification なしでの ResidentKey の利用も可能です。
+ここでは User Verification の説明のために PIN の入力フローも合わせて説明しましたが、実際には User Verification なしでの ResidentKey の利用も可能です。
 キーボードがなくユーザー名や PIN の入力が難しかったり、手袋を利用していて YubiKey のタップが難しい現場などでは、NFCを利用してワンタップログインといった運用が可能です。
 
 === Attestation について
