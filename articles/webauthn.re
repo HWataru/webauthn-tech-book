@@ -14,7 +14,7 @@ FIDO の文脈における RP（Relying Party）とは Authenticator に認証�
 Platform API は、Platform、つまり PC や スマートフォンに登載された TPM や TEE といったセキュアチップと通信を行います。
 PIN あるいはデバイスに登載された生体認証デバイスによって、セキュアチップ上での秘密鍵の生成や保存のための認証が行われます。
 つまり、スマートフォンに登載された指紋デバイスなどで、Webの認証が可能になります。
-Internal Authenticator を利用する API は、ネイティブアプリケーション、あるいは Web ブラウザーから呼び出せるようになっています。
+Internal Authenticator を利用する API は、ネイティブアプリケーション、あるいは ブラウザから呼び出せるようになっています。
 Android や、Windows 10 で Internal Authenticator が利用できるかどうかは isUserVerifyingPlatformAuthenticatorAvailable() というメソッドで判定ができるようになっているようです。
 
 一方 CTAP は YubiKey などの外部 Authenticator との通信仕様を定めており、これにより USB等で接続された外部デバイスで Web 認証が可能になります。
@@ -41,7 +41,7 @@ U2Fの認証サービスから WebAuthn への切り替えをスムーズにす�
 
 == Web Authentication API
 
-Web Authentication API は W3C で策定が進められている API で、ウェブブラウザ上に実装されています。
+Web Authentication API は W3C で策定が進められている API で、ブラウザ上に実装されています。
 このAPIですが、実は Credential Management API @<fn>{CDM} という Credential を管理する API を拡張する形で実装されています。
 
 Credential Management API にはたった2つのメソッドが定義されています。
@@ -170,7 +170,7 @@ PublicKeyCredential は@<list>{PublicKeyCredential} のような形となりま�
 
 id は、@<strong>{CredentialId} と呼ばれ生成された PublicKeyCredential を一意に定めるIDです。
 @<strong>{response} は @<strong>{AuthenticatorAttestationResponse} と呼ばれ、 clientDataJSON および AttestationObject を含むオブジェクトです。 
-@<strong>{clientDataJSON} は、Client（ブラウザー）で生成された @<strong>{challenge} を含むデータで、実際には JSON を Base64Url エンコードしたバイト配列です。
+@<strong>{clientDataJSON} は、Client（ブラウザ）で生成された @<strong>{challenge} を含むデータで、実際には JSON を Base64Url エンコードしたバイト配列です。
 origin の検証、Attestationの検証に利用されます。
 
 //listnum[clientDataJSON][clientDataJSON type は webauthn.create もしくは webauthn.get]{
