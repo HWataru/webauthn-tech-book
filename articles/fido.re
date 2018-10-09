@@ -52,7 +52,7 @@ FIDO Alliance では U2F と UAF のふたつの仕様がすでに存在しま�
 FIDO UAF は Universal Authentication Framework の略で、主にスマートフォンでパスワードレス認証を行うための仕様です。
 一方 U2F は、Universal 2nd Factor の略で、USBなどのいわゆる「ドングル」を利用して、 Web での2段階認証を行うための仕様です。
 
-そして、本書で開設する Web Authentication API は、FIDO2 プロジェクトの一部で、
+そして、本書で解説する Web Authentication API は、FIDO2 プロジェクトの一部で、
 U2F をベースとしつつも、Web でもスマートフォンでも利用可能なパスワードレス認証の仕様となっています。
 
 == FIDO の基本コンセプト
