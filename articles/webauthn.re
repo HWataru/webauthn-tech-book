@@ -14,7 +14,7 @@ FIDO の文脈における RP（Relying Party）とは Authenticator に認証�
 Platform API は、Platform、つまり PC や スマートフォンに登載された TPM や TEE といったセキュアチップと通信を行います。
 PIN あるいはデバイスに登載された生体認証デバイスによって、セキュアチップ上での秘密鍵の生成や保存のための認証が行われます。
 つまり、スマートフォンに登載された指紋デバイスなどで、Webの認証が可能になります。
-Internal Authenticator を利用する API は、ネイティブアプリケーション、あるいは Web ブラウザーから呼び出せるようになっています。
+Internal Authenticator を利用する API は、ネイティブアプリケーション、あるいは ブラウザから呼び出せるようになっています。
 Android や、Windows 10 で Internal Authenticator が利用できるかどうかは isUserVerifyingPlatformAuthenticatorAvailable() というメソッドで判定ができるようになっているようです。
 
 一方 CTAP は YubiKey などの外部 Authenticator との通信仕様を定めており、これにより USB等で接続された外部デバイスで Web 認証が可能になります。
@@ -23,7 +23,7 @@ Android や、Windows 10 で Internal Authenticator が利用できるかどう�
 
 CTAP とは Client to Authenticator Protocol@<fn>{CTAP} の略で、Client が roaming Authenticator と通信するための仕様です。
 roaming Authenticator とは、持ち運びが可能な外付けの認証デバイスであり、 CTAP では Client と USB/NFC/Bluetooth のいずれかで通信するように定められています。
-YubiKey や Google の Titan Key などが、有名です。
+YubiKey や Google の Titan Key などが有名です。
 
 CTAP には CTAP1 と CTAP2 が存在し、CTAP1 は U2F プロトコルを指します。
 一方 CTAP2 は CTAP1 を拡張した規格です。CTAP2 では CTAP1 では実現できなかったパスワードレス認証や、PIN や 生体認証を利用したマルチファクター認証がスペックとして追加されています。
@@ -36,12 +36,12 @@ WebAuthn では U2Fプロトコルに対応した Authenticator を利用する�
 少し説明が難しいのですが WebAuthn と従来の U2Fプロトコルとは一部パラメータ等が異なります。
 具体的には U2F では AppID、WebAuthn では RP ID と呼ばれているパラメータが異なっており、前者がプロトコル名 (https://) を含むのに対し、後者は ドメイン名しか含みません。
 そのため、現在 U2F で認証をしているサービスをそのまま、WebAuthn に切り替えることはできません。
-ただし、WebAuthn のスペックには、この差を埋めるための Extension（AppIdExtention） が定義されており、
+ただし、WebAuthn のスペックには、この差を埋めるための Extension（AppIdExtension） が定義されており、
 U2Fの認証サービスから WebAuthn への切り替えをスムーズにするための工夫がされています。
 
 == Web Authentication API
 
-Web Authentication API は W3C で策定が進められている API で、ウェブブラウザ上に実装されています。
+Web Authentication API は W3C で策定が進められている API で、ブラウザ上に実装されています。
 このAPIですが、実は Credential Management API @<fn>{CDM} という Credential を管理する API を拡張する形で実装されています。
 
 Credential Management API にはたった2つのメソッドが定義されています。
@@ -59,7 +59,7 @@ navigator.credentials.get({publicKey: PublicKeyCredentialRequestOptions})
 
 
 通常これらのオプションは、サービス提供者のポリシーや、ユーザーの選択によってパラメーターを変更することになります。
-ただしオプションに関しては数も非常に多く、複雑であるため、本書では基本的な流れをとらえてるためシンプルなオプションで解説をすすめたいと思います。
+ただしオプションに関しては数も非常に多く、複雑なので、本書では基本的な流れをとらえるためにシンプルなオプションで解説をすすめたいと思います。
 
 //footnote[CDM][Credential Management API : @<href>{https://www.w3.org/TR/credential-management-1/}]
 
@@ -124,10 +124,10 @@ navigator.credentials.create({
 また、@<strong>{rp.id} を直接指定することも可能です。
 たとえば subdomain.example.com 上で、rp.id を指定しない場合、暗黙的に rp.id は subdomain.example.com になります。
 しかし、subdomain.example.com 上では、@<strong>{rp.id} としてexample.com を指定することも可能です。
-そうしたばあい、 *.example.com で使いまわすことが可能な Credential を作成することが可能です。
+そうした場合、 *.example.com で使いまわすことが可能な Credential を作成することが可能です。
 
 @<strong>{user} は Credential を利用するユーザーに関するパラメーターです。
-@<strong>{displayName} は、@<strong>{rp.name} と合わせて、ユーザーへの同意画面で利用されたり、
+@<strong>{displayName} は、@<strong>{rp.name} と合わせて、ユーザーへの同意画面や、
 Authenticator 上で、アカウント情報を表示する際などに利用されます。
 @<strong>{user.id} はサービス固有の ID で利用者に対して表示することはありませんが必ずユニークな id である必要があります。
 一般的にはサービスの内部で利用しているユーザーのユニークidを利用することになるでしょう。
@@ -170,7 +170,7 @@ PublicKeyCredential は@<list>{PublicKeyCredential} のような形となりま�
 
 id は、@<strong>{CredentialId} と呼ばれ生成された PublicKeyCredential を一意に定めるIDです。
 @<strong>{response} は @<strong>{AuthenticatorAttestationResponse} と呼ばれ、 clientDataJSON および AttestationObject を含むオブジェクトです。 
-@<strong>{clientDataJSON} は、Client（ブラウザー）で生成された @<strong>{challenge} を含むデータで、実際には JSON を Base64Url エンコードしたバイト配列です。
+@<strong>{clientDataJSON} は、Client（ブラウザ）で生成された @<strong>{challenge} を含むデータで、実際には JSON を Base64Url エンコードしたバイト配列です。
 origin の検証、Attestationの検証に利用されます。
 
 //listnum[clientDataJSON][clientDataJSON type は webauthn.create もしくは webauthn.get]{
@@ -210,7 +210,7 @@ YubiKey など、生体認証を利用できない Authenticator などでは、
 ちなみに Android や Microsoft Hello で利用する PIN は、User Verification も兼ねているようです。
 おそらく、PIN の入力をローカルリソースからでなければできないような仕組みにしているのだと思いますが詳細は不明です。
 
-=== 作成した Credential を利用した認証（Assersion）
+=== 作成した Credential を利用した認証（Assertion）
 
 作成された PublicKeyCredential はサーバーに送られ次回以降の認証で利用されます。
 一方 Authenticator も CredentialId と PublicKeyCredential の組み合わせを記憶しており、次回の認証時に CredentailId を直接指定することも可能で、
@@ -254,7 +254,7 @@ response には AuthenticatorAssertionResponse がセットされ、publicKey �
 代わりに authenticatorData と signature が返されます。
 
 ClientData は credentials.create() の際の @<list>{clientDataJSON}同様で、type のみ webauthn.get となっています。
-authenticatorData は、さまざまなデータを含みますが、今は RP ID Hash, 1yte の　Flags（UP,UV の結果を含む）, Counter が含まれるものだと思ってください。
+authenticatorData は、さまざまなデータを含みますが、今は RP ID Hash, 1byte の Flags（UP,UV の結果を含む）, Counter が含まれるものだと思ってください。
 
 @<strong>{signature} は credentials.get() で作成した publicKey に対応する秘密鍵で作成した署名で、
 authenticatordata と clientDatan の SHA256 ハッシュを計算した clientDataHash を結合したバイト配列に対して行われます。
@@ -366,7 +366,7 @@ Client はユーザーに対し、Authenticator が返した Credential のリ�
 
 //image[residentKey_auth][ResidentKey を利用したユーザネームレス認証]
 
-ここでは　User Verification の説明のために PIN の入力フローも合わせて説明しましたが、実際には User Verification なしでの ResidentKey の利用も可能です。
+ここでは User Verification の説明のために PIN の入力フローも合わせて説明しましたが、実際には User Verification なしでの ResidentKey の利用も可能です。
 キーボードがなくユーザー名や PIN の入力が難しかったり、手袋を利用していて YubiKey のタップが難しい現場などでは、NFCを利用してワンタップログインといった運用が可能です。
 
 === Attestation について
